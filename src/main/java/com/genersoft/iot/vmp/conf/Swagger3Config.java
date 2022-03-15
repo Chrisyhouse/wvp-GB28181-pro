@@ -93,6 +93,7 @@ public class Swagger3Config {
                 .pathMapping("/")
                 .enable(enable);
     }
+
     @Bean
     public Docket createUserApi() {
         return new Docket(DocumentationType.OAS_30)
@@ -108,10 +109,10 @@ public class Swagger3Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("WVP-PRO 接口文档")
-                .description("更多请咨询服务开发者(https://github.com/648540858/wvp-GB28181-pro)。")
-                .contact(new Contact("648540858", "648540858", "648540858@qq.com"))
-                .version("2.0")
+                .title("紫川国标平台 接口文档")
+                .description("")
+                .contact(new Contact("xuswift", "_", "664295967@qq.com"))
+                .version("V2.4")
                 .build();
     }
 }
