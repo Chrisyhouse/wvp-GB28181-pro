@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import com.genersoft.iot.vmp.conf.SipConfig;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 级联平台管理
@@ -230,6 +231,7 @@ public class PlatformController {
             wvpResult.setMsg("missing parameters");
             return new ResponseEntity<>(wvpResult, HttpStatus.BAD_REQUEST);
         }
+        parentPlatform.setCharacterSet(parentPlatform.getCharacterSet().toUpperCase());
         ParentPlatform parentPlatformOld = storager.queryParentPlatByServerGBId(parentPlatform.getServerGBId());
 
         boolean updateResult = storager.updateParentPlatform(parentPlatform);
@@ -305,6 +307,8 @@ public class PlatformController {
         // 停止发送位置订阅定时任务
         String key = VideoManagerConstants.SIP_SUBSCRIBE_PREFIX + userSetup.getServerId() +  "_MobilePosition_" + parentPlatform.getServerGBId();
         dynamicTask.stop(key);
+        // 删除缓存的订阅信息
+        subscribeHolder.removeAllSubscribe(parentPlatform.getServerGBId());
         if (deleteResult) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
@@ -341,7 +345,6 @@ public class PlatformController {
      * @param platformId  上级平台ID
      * @param query       查询内容
      * @param online      是否在线
-     * @param choosed     是否已选中
      * @param channelType 通道类型
      * @return
      */

@@ -141,6 +141,7 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 		String now = this.format.format(System.currentTimeMillis());
 		device.setUpdateTime(now);
 		Device deviceByDeviceId = deviceMapper.getDeviceByDeviceId(device.getDeviceId());
+		device.setCharset(device.getCharset().toUpperCase());
 		if (deviceByDeviceId == null) {
 			device.setCreateTime(now);
 			redisCatchStorage.updateDevice(device);
@@ -772,7 +773,7 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 		try {
 			if (streamProxyMapper.update(streamProxyItem) > 0) {
 				if (!StringUtils.isEmpty(streamProxyItem.getGbId())) {
-					if (gbStreamMapper.update(streamProxyItem) > 0) {
+					if (gbStreamMapper.updateByAppAndStream(streamProxyItem) == 0) {
 						//事务回滚
 						dataSourceTransactionManager.rollback(transactionStatus);
 						return false;
@@ -885,12 +886,11 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 			List<ParentPlatform> parentPlatforms = parentPlatformMapper.selectAllAhareAllLiveStream();
 			if (parentPlatforms.size() > 0) {
 				for (ParentPlatform parentPlatform : parentPlatforms) {
-					streamPushItem.setCatalogId(parentPlatform.getCatalogId());
-					streamPushItem.setPlatformId(parentPlatform.getServerGBId());
-					String stream = streamPushItem.getStream();
-					StreamProxyItem streamProxyItems = platformGbStreamMapper.selectOne(streamPushItem.getApp(), stream,
+					StreamProxyItem streamProxyItem = platformGbStreamMapper.selectOne(streamPushItem.getApp(), streamPushItem.getStream(),
 							parentPlatform.getServerGBId());
-					if (streamProxyItems == null) {
+					if (streamProxyItem == null) {
+						streamPushItem.setCatalogId(parentPlatform.getCatalogId());
+						streamPushItem.setPlatformId(parentPlatform.getServerGBId());
 						platformGbStreamMapper.add(streamPushItem);
 						eventPublisher.catalogEventPublishForStream(parentPlatform.getServerGBId(), streamPushItem, CatalogEvent.ADD);
 					}
