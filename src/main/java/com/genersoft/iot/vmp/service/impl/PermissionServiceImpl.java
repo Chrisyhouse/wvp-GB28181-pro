@@ -16,7 +16,7 @@ import java.util.Set;
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
-	@Autowired(required = false)
+	@Autowired
 	private PermissionDao permissionDao;
 
 	/**

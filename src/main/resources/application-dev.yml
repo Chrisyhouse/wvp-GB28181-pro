@@ -42,6 +42,8 @@ spring:
             # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
             connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
             #stat-view-servlet.url-pattern: /admin/druid/*
+mybatis:
+    mapperLocations: classpath:/mapper/*.xml
 
 #[可选] WVP监听的HTTP端口, 网页和接口调用都是这个端口
 server:

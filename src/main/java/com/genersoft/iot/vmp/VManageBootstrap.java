@@ -3,6 +3,7 @@ package com.genersoft.iot.vmp;
 import java.util.logging.LogManager;
 
 import com.genersoft.iot.vmp.conf.druid.EnableDruidSupport;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -19,6 +20,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @EnableScheduling
 @EnableOpenApi
 @EnableDruidSupport
+@MapperScan("com.genersoft.iot.vmp.storager.dao")
 public class VManageBootstrap extends LogManager {
 	private static String[] args;
 	private static ConfigurableApplicationContext context;

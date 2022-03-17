@@ -22,7 +22,7 @@ import java.util.Set;
  */
 @Service
 public class UserManagerServiceImpl implements IUserManagerService {
-    @Autowired(required = false)
+    @Autowired
     private UserManagerDao userDao;
 
     /**
