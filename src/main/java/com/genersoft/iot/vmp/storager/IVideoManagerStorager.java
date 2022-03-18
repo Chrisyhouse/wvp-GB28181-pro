@@ -6,6 +6,7 @@ import com.genersoft.iot.vmp.media.zlm.dto.StreamProxyItem;
 import com.genersoft.iot.vmp.media.zlm.dto.StreamPushItem;
 import com.genersoft.iot.vmp.service.bean.GPSMsgInfo;
 import com.genersoft.iot.vmp.storager.dao.dto.ChannelSourceInfo;
+import com.genersoft.iot.vmp.storager.dao.dto.SysLog;
 import com.genersoft.iot.vmp.vmanager.bean.DeviceChannelTree;
 import com.genersoft.iot.vmp.vmanager.gb28181.platform.bean.ChannelReduce;
 import com.github.pagehelper.PageInfo;
@@ -109,6 +110,14 @@ public interface IVideoManagerStorager {
 	 * @return List<DeviceAlarm> 设备对象数组
 	 */
 	public PageInfo<DeviceAlarm> queryDeviceAlarmList(int page, int count);
+
+	/**
+	 * 操作日志创建
+	 *
+	 * @param sysLog 设备对象
+	 * @return true：创建成功  false：创建失败
+	 */
+	public boolean createSysLog(SysLog sysLog);
 
 	/**
 	 * 获取某个设备的通道列表

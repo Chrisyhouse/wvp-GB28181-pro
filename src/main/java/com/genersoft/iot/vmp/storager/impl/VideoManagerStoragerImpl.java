@@ -15,6 +15,7 @@ import com.genersoft.iot.vmp.storager.IRedisCatchStorage;
 import com.genersoft.iot.vmp.storager.IVideoManagerStorager;
 import com.genersoft.iot.vmp.storager.dao.*;
 import com.genersoft.iot.vmp.storager.dao.dto.ChannelSourceInfo;
+import com.genersoft.iot.vmp.storager.dao.dto.SysLog;
 import com.genersoft.iot.vmp.utils.node.ForestNodeMerger;
 import com.genersoft.iot.vmp.vmanager.bean.DeviceChannelTree;
 import com.genersoft.iot.vmp.vmanager.gb28181.platform.bean.ChannelReduce;
@@ -64,6 +65,9 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 
 	@Autowired
 	private DeviceChannelMapper deviceChannelMapper;
+
+	@Autowired
+	private SysLogMapper sysLogMapper;
 
 	@Autowired
 	private DeviceMobilePositionMapper deviceMobilePositionMapper;
@@ -176,6 +180,17 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 			deviceChannelMapper.update(channel);
 		}
 		deviceChannelMapper.updateChannelSubCount(deviceId,channel.getParentId());
+	}
+
+	/**
+	 * 操作日志创建
+	 *
+	 * @param sysLog 操作日志创建
+	 * @return true：创建成功  false：创建失败
+	 */
+	@Override
+	public synchronized boolean createSysLog(SysLog sysLog){
+		return sysLogMapper.add(sysLog) > 0;
 	}
 
 	@Override
