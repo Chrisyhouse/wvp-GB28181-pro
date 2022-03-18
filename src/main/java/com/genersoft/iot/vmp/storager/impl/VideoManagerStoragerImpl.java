@@ -51,6 +51,9 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 	SipConfig sipConfig;
 
 	@Autowired
+	private DeviceAlarmMapper deviceAlarmMapper;
+
+	@Autowired
 	DataSourceTransactionManager dataSourceTransactionManager;
 
 	@Autowired

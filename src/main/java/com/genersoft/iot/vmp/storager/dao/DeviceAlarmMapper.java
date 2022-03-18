@@ -45,4 +45,20 @@ public interface DeviceAlarmMapper {
             " </script>"
             )
     int clearAlarmBeforeTime(Integer id, List<String> deviceIdList, String time);
+
+
+    /***
+     *查询设备报警
+     * @param deviceId
+     * @return
+     */
+    @Select("SELECT * FROM device_alarm WHERE deviceId = #{deviceId}")
+    DeviceAlarm getDeviceAlarmByDeviceId(String deviceId);
+
+    /***
+     * 分页查询设备报警列表
+     * @return
+     */
+    @Select("SELECT * FROM device_alarm ORDER BY id DESC")
+    List<DeviceAlarm> getDevices();
 }
