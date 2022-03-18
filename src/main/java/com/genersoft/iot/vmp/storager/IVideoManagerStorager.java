@@ -12,33 +12,33 @@ import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
-/**    
+/**
  * @description:视频设备数据存储接口
  * @author: swwheihei
- * @date:   2020年5月6日 下午2:14:31     
+ * @date:   2020年5月6日 下午2:14:31
  */
 @SuppressWarnings("rawtypes")
 public interface IVideoManagerStorager {
 
-	/**   
+	/**
 	 * 根据设备ID判断设备是否存在
-	 * 
+	 *
 	 * @param deviceId 设备ID
 	 * @return true:存在  false：不存在
 	 */
 	public boolean exists(String deviceId);
-	
-	/**   
+
+	/**
 	 * 视频设备创建
-	 * 
+	 *
 	 * @param device 设备对象
 	 * @return true：创建成功  false：创建失败
 	 */
 	public boolean create(Device device);
-	
-	/**   
+
+	/**
 	 * 视频设备更新
-	 * 
+	 *
 	 * @param device 设备对象
 	 * @return true：创建成功  false：创建失败
 	 */
@@ -74,10 +74,10 @@ public interface IVideoManagerStorager {
 	 * @param channelId 通道ID
 	 */
 	public void stopPlay(String deviceId, String channelId);
-	
-	/**   
+
+	/**
 	 * 获取设备
-	 * 
+	 *
 	 * @param deviceId 设备ID
 	 * @return DShadow 设备对象
 	 */
@@ -92,7 +92,7 @@ public interface IVideoManagerStorager {
 	 * @return
 	 */
 	public PageInfo queryChannelsByDeviceId(String deviceId, String query, Boolean hasSubChannel, Boolean online, int page, int count);
-	
+
 	public List<DeviceChannel> queryChannelsByDeviceIdWithStartAndLimit(String deviceId, String query, Boolean hasSubChannel, Boolean online, int start, int limit);
 
 	/**
@@ -101,6 +101,14 @@ public interface IVideoManagerStorager {
 	 * @return
 	 */
 	List<DeviceChannelTree> tree(String deviceId);
+
+	/**
+	 * 获取多个设备报警汇总
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return List<DeviceAlarm> 设备对象数组
+	 */
+	public PageInfo<DeviceAlarm> queryDeviceAlarmList(int page, int count);
 
 	/**
 	 * 获取某个设备的通道列表
@@ -125,6 +133,8 @@ public interface IVideoManagerStorager {
 	 */
 	public int delChannel(String deviceId, String channelId);
 
+
+
 	/**
 	 * 获取多个设备
 	 * @param page 当前页数
@@ -140,25 +150,25 @@ public interface IVideoManagerStorager {
 	 */
 	public List<Device> queryVideoDeviceList();
 
-	/**   
+	/**
 	 * 删除设备
-	 * 
+	 *
 	 * @param deviceId 设备ID
 	 * @return true：删除成功  false：删除失败
 	 */
 	public boolean delete(String deviceId);
-	
-	/**   
+
+	/**
 	 * 更新设备在线
-	 * 
+	 *
 	 * @param deviceId 设备ID
 	 * @return true：更新成功  false：更新失败
 	 */
 	public boolean online(String deviceId);
-	
-	/**   
+
+	/**
 	 * 更新设备离线
-	 * 
+	 *
 	 * @param deviceId 设备ID
 	 * @return true：更新成功  false：更新失败
 	 */

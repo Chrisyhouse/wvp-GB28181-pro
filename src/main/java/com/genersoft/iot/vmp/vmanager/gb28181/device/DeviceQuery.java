@@ -3,6 +3,7 @@ package com.genersoft.iot.vmp.vmanager.gb28181.device;
 import com.alibaba.fastjson.JSONObject;
 import com.genersoft.iot.vmp.conf.DynamicTask;
 import com.genersoft.iot.vmp.gb28181.bean.Device;
+import com.genersoft.iot.vmp.gb28181.bean.DeviceAlarm;
 import com.genersoft.iot.vmp.gb28181.bean.DeviceChannel;
 import com.genersoft.iot.vmp.gb28181.event.DeviceOffLineDetector;
 import com.genersoft.iot.vmp.gb28181.transmit.callback.DeferredResultHolder;
@@ -36,21 +37,21 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/device/query")
 public class DeviceQuery {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(DeviceQuery.class);
-	
+
 	@Autowired
 	private IVideoManagerStorager storager;
 
 	@Autowired
 	private IRedisCatchStorage redisCatchStorage;
-	
+
 	@Autowired
 	private SIPCommander cmder;
-	
+
 	@Autowired
 	private DeferredResultHolder resultHolder;
-	
+
 	@Autowired
 	private DeviceOffLineDetector offLineDetector;
 
@@ -71,11 +72,11 @@ public class DeviceQuery {
 	})
 	@GetMapping("/devices/{deviceId}")
 	public ResponseEntity<Device> devices(@PathVariable String deviceId){
-		
+
 //		if (logger.isDebugEnabled()) {
 //			logger.debug("查询视频设备API调用，deviceId：" + deviceId);
 //		}
-		
+
 		Device device = storager.queryVideoDevice(deviceId);
 		return new ResponseEntity<>(device,HttpStatus.OK);
 	}
@@ -93,12 +94,34 @@ public class DeviceQuery {
 	})
 	@GetMapping("/devices")
 	public PageInfo<Device> devices(int page, int count){
-		
+
 //		if (logger.isDebugEnabled()) {
 //			logger.debug("查询所有视频设备API调用");
 //		}
-		
+
 		return storager.queryVideoDeviceList(page, count);
+	}
+
+	/**
+	 * 分页查询国标设备报警信息
+	 * @param page 当前页
+	 * @param count 每页查询数量
+	 * @return 分页国标列表
+	 */
+//	@Log("分页查询国标设备报警信息")
+	@ApiOperation("分页查询国标设备报警信息")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", value = "当前页", required = true, dataTypeClass = Integer.class),
+			@ApiImplicitParam(name = "count", value = "每页查询数量", required = true, dataTypeClass = Integer.class),
+	})
+	@GetMapping("/devicesAlarms")
+	public PageInfo<DeviceAlarm> devicesAlarms(int page, int count){
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("查询所有视频设备API调用");
+		}
+
+		return storager.queryDeviceAlarmList(page, count);
 	}
 
 	/**
@@ -149,7 +172,7 @@ public class DeviceQuery {
 	})
 	@PostMapping("/devices/{deviceId}/sync")
 	public DeferredResult<ResponseEntity<Device>> devicesSync(@PathVariable String deviceId){
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("设备通道信息同步API调用，deviceId：" + deviceId);
 		}
@@ -203,7 +226,7 @@ public class DeviceQuery {
 	})
 	@DeleteMapping("/devices/{deviceId}/delete")
 	public ResponseEntity<String> delete(@PathVariable String deviceId){
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("设备信息删除API调用，deviceId：" + deviceId);
 		}
@@ -344,7 +367,7 @@ public class DeviceQuery {
 
 	/**
 	 * 设备状态查询请求API接口
-	 * 
+	 *
 	 * @param deviceId 设备id
 	 */
 	@ApiOperation("设备状态查询")
@@ -403,8 +426,8 @@ public class DeviceQuery {
 	})
 	@GetMapping("/alarm/{deviceId}")
 	public DeferredResult<ResponseEntity<String>> alarmApi(@PathVariable String deviceId,
-														@RequestParam(required = false) String startPriority, 
-														@RequestParam(required = false) String endPriority, 
+														@RequestParam(required = false) String startPriority,
+														@RequestParam(required = false) String endPriority,
 														@RequestParam(required = false) String alarmMethod,
 														@RequestParam(required = false) String alarmType,
 														@RequestParam(required = false) String startTime,

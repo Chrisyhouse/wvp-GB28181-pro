@@ -33,7 +33,7 @@ import org.springframework.util.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**    
+/**
  * 视频设备数据存储-jdbc实现
  * swwheihei
  * 2020年5月6日 下午2:31:42
@@ -243,6 +243,19 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 			}
 		}
 		return addChannels.size() + updateChannels.size();
+	}
+
+	/**
+	 * 获取多个设备报警汇总
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return PageInfo<DeviceAlarm> 设备对象数组
+	 */
+	@Override
+	public PageInfo<DeviceAlarm> queryDeviceAlarmList(int page, int count) {
+		PageHelper.startPage(page, count);
+		List<DeviceAlarm> all = deviceAlarmMapper.getDevices();
+		return new PageInfo<>(all);
 	}
 
 	@Override
