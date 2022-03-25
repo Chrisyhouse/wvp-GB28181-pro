@@ -48,6 +48,11 @@ mybatis:
 #[可选] WVP监听的HTTP端口, 网页和接口调用都是这个端口
 server:
     port: 18080
+    servlet:
+        session:
+            timeout: 2592000
+            cookie:
+                max-age: 2592000
 
 # 作为28181服务器的配置
 sip:
@@ -69,7 +74,7 @@ sip:
 
 #zlm 默认服务器配置
 media:
-    id: Uh8izLbKrCEW9noy
+    id: p1uQtdDwZsd5V4x0
     # [必须修改] zlm服务器的内网IP
     ip: 10.21.0.122
     # [必须修改] zlm服务器的http.port
@@ -93,6 +98,38 @@ logging:
         com.genersoft.iot: debug
         com.genersoft.iot.vmp.storager.dao: debug
         com.genersoft.iot.vmp.gb28181: debug
+
+# [根据业务需求配置]
+user-settings:
+    # [可选] 服务ID，不写则为000000
+    server-id:
+    # [可选] 自动点播， 使用固定流地址进行播放时，如果未点播则自动进行点播, 需要rtp.enable=true
+    auto-apply-play: false
+    # [可选] 部分设备需要扩展SDP，需要打开此设置
+    senior-sdp: false
+    # 保存移动位置历史轨迹：true:保留历史数据，false:仅保留最后的位置(默认)
+    save-position-history: false
+    # 点播等待超时时间,单位：毫秒
+    play-timeout: 3000
+    # 是否开启接口鉴权
+    interface-authentication: true
+    # 自动配置redis 可以过期事件
+    redis-config: true
+    # 接口鉴权例外的接口, 即不进行接口鉴权的接口,尽量详细书写，尽量不用/**，至少两级目录
+    interface-authentication-excludes:
+        - /api/v1/**
+    # 推流直播是否录制
+    record-push-live: true
+    # 国标是否录制
+    record-sip: true
+    # 是否将日志存储进数据库
+    logInDatebase: true
+    # 第三方匹配，用于从stream钟获取有效信息
+    thirdPartyGBIdReg: "[\\s\\S]*"
+
+# 在线文档： swagger-ui（生产环境建议关闭）
+swagger-ui:
+    enabled: true
 
 # 版本信息， 不需修改
 version:

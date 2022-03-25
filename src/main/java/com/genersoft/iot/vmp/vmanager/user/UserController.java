@@ -1,6 +1,7 @@
 package com.genersoft.iot.vmp.vmanager.user;
 
 import com.alibaba.fastjson.JSONObject;
+import com.genersoft.iot.vmp.annotation.Log;
 import com.genersoft.iot.vmp.conf.security.SecurityUtils;
 import com.genersoft.iot.vmp.conf.security.dto.LoginUser;
 import com.genersoft.iot.vmp.service.IRoleService;
@@ -81,6 +82,7 @@ public class UserController {
         return result;
     }
 
+    @Log("用户登录")
     @ApiOperation("登录[正式]")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", dataTypeClass = String.class,required = true),

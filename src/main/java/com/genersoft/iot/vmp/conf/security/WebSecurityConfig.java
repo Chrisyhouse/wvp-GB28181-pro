@@ -128,6 +128,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // 放行接口
                 .antMatchers("/api/user/login","/api/user/auth","/index/hook/**").permitAll()
+//                 放行所有
+//                .antMatchers("/api/**").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 // 异常处理(权限拒绝、登录失效等)

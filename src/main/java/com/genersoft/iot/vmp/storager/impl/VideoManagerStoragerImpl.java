@@ -276,6 +276,20 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 		return new PageInfo<>(all);
 	}
 
+
+	/**
+	 * 获取操作日志汇总
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return PageInfo<SysLog> 设备对象数组
+	 */
+	@Override
+	public PageInfo<SysLog> querySysLogList(int page, int count) {
+		PageHelper.startPage(page, count);
+		List<SysLog> all = sysLogMapper.getSysLogs();
+		return new PageInfo<>(all);
+	}
+
 	@Override
 	public boolean resetChannels(String deviceId, List<DeviceChannel> deviceChannelList) {
 		TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);

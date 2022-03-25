@@ -111,6 +111,15 @@ public interface IVideoManagerStorager {
 	 */
 	public PageInfo<DeviceAlarm> queryDeviceAlarmList(int page, int count);
 
+
+	/**
+	 * 获取操作日志分页
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return List<SysLog> 设备对象数组
+	 */
+	public PageInfo<SysLog> querySysLogList(int page, int count);
+
 	/**
 	 * 操作日志创建
 	 *

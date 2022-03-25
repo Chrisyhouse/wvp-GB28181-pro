@@ -157,6 +157,7 @@ public class ProxyServletConfig {
     public ServletRegistrationBean recordServletRegistrationBean(){
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new RecordProxyServlet(),"/record_proxy/*");
         servletRegistrationBean.setName("record_proxy");
+        //BUG
         servletRegistrationBean.addInitParameter("targetUri", "http://127.0.0.1:18081");
         servletRegistrationBean.addUrlMappings();
         if (logger.isDebugEnabled()) {
