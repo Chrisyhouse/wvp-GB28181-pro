@@ -86,7 +86,7 @@ public class CatalogNotifyMessageHandler extends SIPRequestProcessorParent imple
                     deviceChannel.setParental(1);
                     deviceChannel.setParentId(catalog.getParentId());
                     deviceChannel.setRegisterWay(1);
-                    deviceChannel.setCivilCode(config.getDomain().substring(0, config.getDomain().length() - 2));
+                    deviceChannel.setCivilCode(parentPlatform.getDeviceGBId().substring(0,6));
                     deviceChannel.setModel("live");
                     deviceChannel.setOwner("wvp-pro");
                     deviceChannel.setSecrecy("0");
@@ -104,6 +104,7 @@ public class CatalogNotifyMessageHandler extends SIPRequestProcessorParent imple
                     DeviceChannel deviceChannel = storager.queryChannel(channelReduce.getDeviceId(), channelReduce.getChannelId());
                     deviceChannel.setParental(0);
                     deviceChannel.setParentId(channelReduce.getCatalogId());
+                    deviceChannel.setCivilCode(parentPlatform.getDeviceGBId().substring(0, 6));
                     cmderFroPlatform.catalogQuery(deviceChannel, parentPlatform, sn, fromHeader.getTag(), size);
                     // 防止发送过快
                     Thread.sleep(100);
@@ -125,7 +126,7 @@ public class CatalogNotifyMessageHandler extends SIPRequestProcessorParent imple
                     deviceChannel.setStatus(gbStream.isStatus()?1:0);
     				deviceChannel.setParentId(gbStream.getCatalogId());
                     deviceChannel.setRegisterWay(1);
-                    deviceChannel.setCivilCode(config.getDomain().substring(0, config.getDomain().length() - 2));
+                    deviceChannel.setCivilCode(parentPlatform.getDeviceGBId().substring(0,6));
                     deviceChannel.setModel("live");
                     deviceChannel.setOwner("wvp-pro");
                     deviceChannel.setParental(0);
