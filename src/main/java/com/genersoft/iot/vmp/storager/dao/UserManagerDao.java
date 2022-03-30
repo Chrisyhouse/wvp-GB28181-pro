@@ -43,14 +43,19 @@ public interface UserManagerDao {
 	int updateUser(JSONObject jsonObject);
 
 	/**
-	 * 角色列表
-	 */
-	List<JSONObject> listRole();
-
-	/**
 	 * 查询所有权限, 给角色分配权限时调用
 	 */
 	List<JSONObject> listAllPermission();
+
+	/**
+	 * 新增权限
+	 */
+	int insertPermission(JSONObject jsonObject);
+
+	/**
+	 * 角色列表
+	 */
+	List<JSONObject> listRole();
 
 	/**
 	 * 新增角色

@@ -29,15 +29,32 @@ public interface IUserManagerService {
      */
     JSONObject updateUser(JSONObject jsonObject);
 
-    /**
-     * 角色列表
-     */
-    JSONObject listRole();
 
     /**
      * 查询所有权限, 给角色分配权限时调用
      */
     JSONObject listAllPermission();
+
+    /**
+     * 新增权限
+     */
+
+    JSONObject addPermission(JSONObject jsonObject);
+
+    /**
+     * 修改权限
+     */
+    JSONObject updatePermission();
+
+    /**
+     * 删除权限
+     */
+    JSONObject deletePermission();
+
+    /**
+     * 角色列表
+     */
+    JSONObject listRole();
 
     /**
      * 添加角色

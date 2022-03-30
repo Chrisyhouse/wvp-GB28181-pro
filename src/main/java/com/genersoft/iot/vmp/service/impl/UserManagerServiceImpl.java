@@ -70,14 +70,6 @@ public class UserManagerServiceImpl implements IUserManagerService {
         return CommonUtil.successJson();
     }
 
-    /**
-     * 角色列表
-     */
-    @Override
-    public JSONObject listRole() {
-        List<JSONObject> roles = userDao.listRole();
-        return CommonUtil.successPage(roles);
-    }
 
     /**
      * 查询所有权限, 给角色分配权限时调用
@@ -86,6 +78,43 @@ public class UserManagerServiceImpl implements IUserManagerService {
     public JSONObject listAllPermission() {
         List<JSONObject> permissions = userDao.listAllPermission();
         return CommonUtil.successPage(permissions);
+    }
+
+    /**
+     * 新增权限菜单
+     */
+    @Override
+    public JSONObject addPermission(JSONObject jsonObject) {
+        userDao.insertPermission(jsonObject);
+        return CommonUtil.successJson();
+    }
+
+    /**
+     * 修改权限菜单
+     */
+    @Override
+    public JSONObject updatePermission() {
+        List<JSONObject> permissions = userDao.listAllPermission();
+        return CommonUtil.successPage(permissions);
+    }
+
+    /**
+     * 删除权限菜单
+     */
+    @Override
+    public JSONObject deletePermission() {
+        List<JSONObject> permissions = userDao.listAllPermission();
+        return CommonUtil.successPage(permissions);
+    }
+
+
+    /**
+     * 角色列表
+     */
+    @Override
+    public JSONObject listRole() {
+        List<JSONObject> roles = userDao.listRole();
+        return CommonUtil.successPage(roles);
     }
 
     /**

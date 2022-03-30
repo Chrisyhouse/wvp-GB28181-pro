@@ -232,16 +232,7 @@ public class UserController {
         return userManagerService.getAllRoles();
     }
 
-    /**
-     * 角色列表
-     */
-//    @RequiresPermissions("role:list")
-//    @Log("角色列表")
-    @ApiOperation("角色列表")
-    @GetMapping("/listRole")
-    public JSONObject listRole() {
-        return userManagerService.listRole();
-    }
+
 
     /**
      * 查询所有权限, 给角色分配权限时调用
@@ -254,11 +245,72 @@ public class UserController {
         return userManagerService.listAllPermission();
     }
 
+
+    /**
+     *     @Log("用户登录")
+     *     @ApiOperation("登录[正式]")
+     *     @ApiImplicitParams({
+     *             @ApiImplicitParam(name = "username", value = "用户名", dataTypeClass = String.class,required = true),
+     *             @ApiImplicitParam(name = "password", value = "密码（测试123456）", dataTypeClass = String.class,required = true),
+     *     })
+     *     @GetMapping("/auth")
+     *     public LoginResult auth(String username, String password) {
+     */
+
+    /**
+     * 新增权限
+     */
+    @Log("用户新增权限")
+    @ApiOperation("新增权限")
+    @PostMapping("/addPermission")
+    @ApiImplicitParams({
+                         @ApiImplicitParam(value = "菜单编码", name = "menu_code", required = true, dataType = "String",
+                                 paramType = "query"),
+                         @ApiImplicitParam(value = "菜单名称", name = "menu_name", required = true, dataType = "String",
+                                 paramType = "query"),
+                         @ApiImplicitParam(value = "权限编码", name = "permission_code", required = true, dataType = "String",
+                                paramType = "query"),
+                         @ApiImplicitParam(value = "权限名称", name = "permission_name", required = true, dataType = "String",
+                                 paramType = "query"),
+                        @ApiImplicitParam(value = "是否是子权限", name = "required_permission", required = true, dataType = "java.lang.Integer",
+                                 paramType = "query")
+                  })
+    public JSONObject addPermission(String menu_code,String menu_name,String permission_code,String permission_name, int required_permission ) {
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("id" , (int)((Math.random()*9+1)*100000));//生成6位随机数（不会是5位或者7位，仅只有6位）：
+        requestJson.put("menu_code" , menu_code);
+        requestJson.put("menu_name" , menu_name);
+        requestJson.put("permission_code" , permission_code);
+        requestJson.put("permission_name" , permission_name);
+        requestJson.put("required_permission" , required_permission);
+        CommonUtil.hasAllRequired(requestJson, "id,menu_code,menu_name,permission_code,permission_name,required_permission");
+        return userManagerService.addPermission(requestJson);
+    }
+
+    /**
+     * 修改权限
+     */
+
+    /**
+     * 删除权限
+     */
+
+    /**
+     * 角色列表
+     */
+//    @RequiresPermissions("role:list")
+//    @Log("角色列表")
+    @ApiOperation("角色列表")
+    @GetMapping("/listRole")
+    public JSONObject listRole() {
+        return userManagerService.listRole();
+    }
+
     /**
      * 新增角色
      */
 //    @RequiresPermissions("role:add")
-//    @Log("新增角色")
+    @Log("新增角色")
     @ApiOperation("新增角色")
     @PostMapping("/addRole")
     public JSONObject addRole(@RequestBody JSONObject requestJson) {
@@ -270,7 +322,7 @@ public class UserController {
      * 修改角色
      */
 //    @RequiresPermissions("role:update")
-//    @Log("修改角色")
+    @Log("修改角色")
     @ApiOperation("修改角色")
     @PostMapping("/updateRole")
     public JSONObject updateRole(@RequestBody JSONObject requestJson) {
@@ -282,7 +334,7 @@ public class UserController {
      * 删除角色
      */
 //    @RequiresPermissions("role:delete")
-//    @Log("删除角色")
+    @Log("删除角色")
     @ApiOperation("删除角色")
     @PostMapping("/deleteRole")
     public JSONObject deleteRole(@RequestBody JSONObject requestJson) {
