@@ -657,9 +657,9 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 	}
 
 	@Override
-	public List<ChannelReduce> queryChannelListInParentPlatform(String platformId) {
+	public List<DeviceChannelInPlatform> queryChannelListInParentPlatform(String platformId) {
 
-		return deviceChannelMapper.queryChannelListInAll(null, null, null, platformId, platformId);
+		return deviceChannelMapper.queryChannelByPlatformId(platformId);
 	}
 
 	@Override

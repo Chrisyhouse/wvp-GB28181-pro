@@ -1,4 +1,4 @@
-![logo](https://gitee.com/pan648540858/wvp-GB28181-pro/raw/wvp-28181-2.0/web_src/static/logo.png)
+![logo](https://raw.githubusercontent.com/648540858/wvp-GB28181-pro/wvp-28181-2.0/web_src/static/logo.png)
 # 开箱即用的的28181协议视频平台
 
 [![Build Status](https://travis-ci.org/xia-chu/ZLMediaKit.svg?branch=master)](https://travis-ci.org/xia-chu/ZLMediaKit)
@@ -10,9 +10,9 @@
 
 WEB VIDEO PLATFORM是一个基于GB28181-2016标准实现的开箱即用的网络视频平台，负责实现核心信令与设备管理后台部分，支持NAT穿透，支持海康、大华、宇视等品牌的IPC、NVR接入。支持国标级联，支持将不带国标功能的摄像机/直播流/直播推流转发到其他国标平台。   
 
-流媒体服务基于ZLMediaKit-https://github.com/xiongziliang/ZLMediaKit
-
-前端页面基于MediaServerUI进行修改.  
+流媒体服务基于@夏楚 ZLMediaKit [https://github.com/ZLMediaKit/ZLMediaKit](https://github.com/ZLMediaKit/ZLMediaKit)   
+播放器使用@dexter jessibuca [https://github.com/langhuihui/jessibuca/tree/v3](https://github.com/langhuihui/jessibuca/tree/v3)  
+前端页面基于@Kyle MediaServerUI [https://gitee.com/kkkkk5G/MediaServerUI](https://gitee.com/kkkkk5G/MediaServerUI) 进行修改.  
 
 # 应用场景：
 支持浏览器无插件播放摄像头视频。  
