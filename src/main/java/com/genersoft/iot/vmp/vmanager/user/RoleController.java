@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-@Api(tags = "角色管理")
+//@Api(tags = "角色管理")
 @CrossOrigin
 @RestController
 @RequestMapping("/api/role")
@@ -32,7 +32,7 @@ public class RoleController {
 
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @ApiOperation("添加角色")
+//    @ApiOperation("添加角色")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", required = true, value = "角色名", dataTypeClass = String.class),
             @ApiImplicitParam(name = "authority", required = true, value = "权限（自行定义内容，目前未使用）", dataTypeClass = String.class),
@@ -64,7 +64,7 @@ public class RoleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @ApiOperation("删除角色")
+//    @ApiOperation("删除角色")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", required = true, value = "用户Id", dataTypeClass = Integer.class),
     })
@@ -86,7 +86,7 @@ public class RoleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @ApiOperation("查询角色")
+//    @ApiOperation("查询角色")
     @ApiImplicitParams({})
     @GetMapping("/all")
     public ResponseEntity<WVPResult<List<Role>>> all(){

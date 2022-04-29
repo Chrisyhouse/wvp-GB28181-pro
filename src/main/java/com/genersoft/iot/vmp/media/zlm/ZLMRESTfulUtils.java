@@ -151,6 +151,8 @@ public class ZLMRESTfulUtils {
                         }
 
                     }
+
+
                     File snapFile = new File(targetPath + "/" + fileName);
                     FileOutputStream outStream = new FileOutputStream(snapFile);
 

@@ -103,6 +103,39 @@ public class DeviceQuery {
 	}
 
 	/**
+	 * 分页查询设备组（权限）下国标设备
+	 * @param page 当前页
+	 * @param count 每页查询数量
+	 * @return 分页国标列表
+	 */
+	@ApiOperation("分页查询设备组（权限）下国标设备")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "page", value = "当前页", required = true, dataTypeClass = Integer.class),
+			@ApiImplicitParam(name = "count", value = "每页查询数量", required = true, dataTypeClass = Integer.class),
+			@ApiImplicitParam(value = "设备组名", name = "menuName", required = true, dataType = "String",
+					paramType = "query"),
+			@ApiImplicitParam(value = "角色ID", name = "roleId", required = true, dataType = "int",
+					paramType = "query")
+	})
+	@GetMapping("/devicesByDeviceGp")
+	public PageInfo<Device> devicesByDeviceGp(int page, int count , String menuName,int roleId){
+
+//		if (logger.isDebugEnabled()) {
+//			logger.debug("查询所有视频设备API调用");
+//		}
+		return storager.queryVideoDeviceListByDeviceGp(page, count,menuName,roleId);
+	}
+
+	/**
+	 * 简查询国标设备列表
+	 */
+	@ApiOperation("简查国标设备列表")
+	@GetMapping("/devicesForPermission")
+	public List<Device> devicesForPermission(){
+		return storager.queryVideoDeviceList();
+	}
+
+	/**
 	 * 分页查询国标设备报警信息
 	 * @param page 当前页
 	 * @param count 每页查询数量

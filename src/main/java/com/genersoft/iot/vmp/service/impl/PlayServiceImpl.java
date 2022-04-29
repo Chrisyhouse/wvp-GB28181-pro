@@ -41,6 +41,8 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @SuppressWarnings(value = {"rawtypes", "unchecked"})
@@ -119,6 +121,19 @@ public class PlayServiceImpl implements IPlayService {
             // 点播结束时调用截图接口
             // TODO 应该在上流时调用更好，结束也可能是错误结束
             try {
+                //获取录像截图时间
+                Calendar cal=Calendar.getInstance();
+                int y=cal.get(Calendar.YEAR);
+//                int im=cal.get(Calendar.MONTH);
+//                int d=cal.get(Calendar.DATE);
+//                int h=cal.get(Calendar.HOUR_OF_DAY);
+//                int mi=cal.get(Calendar.MINUTE);
+                String m=String.format("%02d", cal.get(Calendar.MONTH) + 1);
+                String d=String.format("%02d", cal.get(Calendar.DATE));
+                String h=String.format("%02d", cal.get(Calendar.HOUR_OF_DAY));
+                String mi=String.format("%02d", cal.get(Calendar.MINUTE));
+                String s=String.format("%02d", cal.get(Calendar.SECOND));
+
                 String classPath = ResourceUtils.getURL("classpath:").getPath();
                 // 兼容打包为jar的class路径
                 if(classPath.contains("jar")) {
@@ -141,7 +156,12 @@ public class PlayServiceImpl implements IPlayService {
                         StreamInfo streamInfoForSuccess = (StreamInfo)wvpResult.getData();
                         MediaServerItem mediaInfo = mediaServerService.getOne(streamInfoForSuccess.getMediaServerId());
                         String streamUrl = streamInfoForSuccess.getFmp4();
-                        // 请求截图
+                        //保存录像截图 后缀用当前时间 /34020000001320000121_34020000001320000002_2022-04-13_11-30-54.jpg
+                        String record_pic_name = deviceId + "_" + channelId  + "_" + y  + "-" + m + "-" + d + "_" + h + "-" + mi + "-" + s + ".jpg";
+//                        String record_pic_name = "/" + h + "-" + mi + "-" + s + ".jpg";
+                        logger.info("[录像截图地址]: " + path +  record_pic_name);
+                        zlmresTfulUtils.getSnap(mediaInfo, streamUrl, 15, 1, path, record_pic_name);
+                        // 请求播放封面截图
                         logger.info("[请求截图]: " + fileName);
                         zlmresTfulUtils.getSnap(mediaInfo, streamUrl, 15, 1, path, fileName);
                     }

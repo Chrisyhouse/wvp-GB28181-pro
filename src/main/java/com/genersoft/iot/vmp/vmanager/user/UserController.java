@@ -1,30 +1,26 @@
 package com.genersoft.iot.vmp.vmanager.user;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.genersoft.iot.vmp.annotation.Log;
 import com.genersoft.iot.vmp.conf.security.SecurityUtils;
 import com.genersoft.iot.vmp.conf.security.dto.LoginUser;
+import com.genersoft.iot.vmp.gb28181.bean.Device;
+import com.genersoft.iot.vmp.media.zlm.dto.MediaServerItem;
 import com.genersoft.iot.vmp.service.IRoleService;
 import com.genersoft.iot.vmp.service.IUserManagerService;
 import com.genersoft.iot.vmp.service.IUserService;
 import com.genersoft.iot.vmp.service.PermissionService;
-import com.genersoft.iot.vmp.storager.dao.dto.Role;
-import com.genersoft.iot.vmp.storager.dao.dto.User;
+import com.genersoft.iot.vmp.storager.dao.dto.*;
 import com.genersoft.iot.vmp.utils.CommonUtil;
 import com.genersoft.iot.vmp.vmanager.bean.LoginResult;
 import com.genersoft.iot.vmp.vmanager.bean.WVPResult;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
@@ -32,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-@Api(tags = "用户管理")
+@Api(tags = "用户角色权限管理")
 @CrossOrigin
 @RestController
 @RequestMapping("/api/user")
@@ -147,8 +143,11 @@ public class UserController {
         return result;
     }
 
+
+
+
     /* 用户登出 */
-//    @Log("用户登出")
+    @Log("用户登出")
     @ApiOperation("用户登出")
     @GetMapping("/logout")
     public String logout() {
@@ -207,8 +206,12 @@ public class UserController {
 //    @Log("新增用户")
     @ApiOperation("新增用户")
     @PostMapping("/addUser")
-    public JSONObject addUser(@RequestBody JSONObject requestJson) {
-        CommonUtil.hasAllRequired(requestJson, "username, password, nickname,   roleId");
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="userAddItem", value = "新增用户", dataTypeClass = UserAddItem.class)
+    })
+    public JSONObject addUser(@RequestBody UserAddItem userAddItem) {
+        JSONObject requestJson = JSON.parseObject(JSON.toJSONString(userAddItem));
+        CommonUtil.hasAllRequired(requestJson, "username, password, nickname,  roleId");
         return userManagerService.addUser(requestJson);
     }
 
@@ -219,7 +222,11 @@ public class UserController {
 //    @Log("更新用户")
     @ApiOperation("更新用户")
     @PostMapping("/updateUser")
-    public JSONObject updateUser(@RequestBody JSONObject requestJson) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="userUpdateItem", value = "更新用户", dataTypeClass = UserUpdateItem.class)
+    })
+    public JSONObject updateUser(@RequestBody UserUpdateItem userUpdateItem) {
+        JSONObject requestJson = JSON.parseObject(JSON.toJSONString(userUpdateItem));
         CommonUtil.hasAllRequired(requestJson, " nickname,   roleId, deleteStatus, userId");
         return userManagerService.updateUser(requestJson);
     }
@@ -246,6 +253,7 @@ public class UserController {
     }
 
 
+
     /**
      *     @Log("用户登录")
      *     @ApiOperation("登录[正式]")
@@ -258,42 +266,79 @@ public class UserController {
      */
 
     /**
-     * 新增权限
+     * 新增设备组名（权限）
      */
-    @Log("用户新增权限")
-    @ApiOperation("新增权限")
-    @PostMapping("/addPermission")
+    @Log("新增用户设备组名（权限）")
+    @ApiOperation("新增用户设备组名（权限）")
+    @GetMapping("/addPermission")
     @ApiImplicitParams({
-                         @ApiImplicitParam(value = "菜单编码", name = "menu_code", required = true, dataType = "String",
-                                 paramType = "query"),
                          @ApiImplicitParam(value = "菜单名称", name = "menu_name", required = true, dataType = "String",
-                                 paramType = "query"),
-                         @ApiImplicitParam(value = "权限编码", name = "permission_code", required = true, dataType = "String",
-                                paramType = "query"),
-                         @ApiImplicitParam(value = "权限名称", name = "permission_name", required = true, dataType = "String",
-                                 paramType = "query"),
-                        @ApiImplicitParam(value = "是否是子权限", name = "required_permission", required = true, dataType = "java.lang.Integer",
                                  paramType = "query")
                   })
-    public JSONObject addPermission(String menu_code,String menu_name,String permission_code,String permission_name, int required_permission ) {
-        JSONObject requestJson = new JSONObject();
-        requestJson.put("id" , (int)((Math.random()*9+1)*100000));//生成6位随机数（不会是5位或者7位，仅只有6位）：
-        requestJson.put("menu_code" , menu_code);
-        requestJson.put("menu_name" , menu_name);
-        requestJson.put("permission_code" , permission_code);
-        requestJson.put("permission_name" , permission_name);
-        requestJson.put("required_permission" , required_permission);
-        CommonUtil.hasAllRequired(requestJson, "id,menu_code,menu_name,permission_code,permission_name,required_permission");
-        return userManagerService.addPermission(requestJson);
+    public JSONObject addPermission(String menu_name) {
+        return userManagerService.addPermission(menu_name);
+    }
+
+
+    /**
+     * 修改设备组名（权限）
+     */
+    @Log("修改用户设备组名（权限）")
+    @ApiOperation("修改用户设备组名（权限）")
+    @GetMapping("/updatePermission")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "原设备组名", name = "old_menu_name", required = true, dataType = "String",
+                    paramType = "query"),
+            @ApiImplicitParam(value = "新设备组名", name = "new_menu_name", required = true, dataType = "String",
+                    paramType = "query")
+    })
+    public JSONObject updatePermission(String old_menu_name,String new_menu_name) {
+        return userManagerService.updatePermission(old_menu_name,new_menu_name);
     }
 
     /**
-     * 修改权限
+     * 删除用户设备组名（权限）
      */
+    @Log("删除用户设备组名（权限）")
+    @ApiOperation("删除用户设备组名（权限）")
+    @GetMapping("/deletePermission")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "设备组名", name = "menu_name", required = true, dataType = "String",
+                    paramType = "query")
+    })
+    public JSONObject deletePermission(String menu_name) {
+        return userManagerService.deletePermission(menu_name);
+    }
 
     /**
-     * 删除权限
+     * 查询用户设备组名（权限）
      */
+    @Log("查询用户设备组名（权限）")
+    @ApiOperation("查询用户设备组名（权限）")
+    @GetMapping("/getUserGeviceGP")
+    public WVPResult GetUserGeviceGP() {
+        WVPResult<Object> result = new WVPResult<>();
+        result.setCode(200);
+        result.setMsg("success");
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = null;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        JSONObject userPermission = permissionService.getUserDeviceGP(username);
+        JSONObject resultData = new JSONObject();
+        resultData.put("userDeviceGp", userPermission);
+        resultData.put("username", username);
+
+        result.setData(resultData);
+        return result;
+    }
+
+
 
     /**
      * 角色列表
@@ -309,11 +354,14 @@ public class UserController {
     /**
      * 新增角色
      */
-//    @RequiresPermissions("role:add")
     @Log("新增角色")
     @ApiOperation("新增角色")
     @PostMapping("/addRole")
-    public JSONObject addRole(@RequestBody JSONObject requestJson) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="roleAddItem", value = "新增角色信息", dataTypeClass = RoleAddItem.class)
+    })
+    public JSONObject addRole(@RequestBody RoleAddItem roleAddItem) {
+        JSONObject requestJson = JSON.parseObject(JSON.toJSONString(roleAddItem));
         CommonUtil.hasAllRequired(requestJson, "roleName,permissions");
         return userManagerService.addRole(requestJson);
     }
@@ -325,7 +373,11 @@ public class UserController {
     @Log("修改角色")
     @ApiOperation("修改角色")
     @PostMapping("/updateRole")
-    public JSONObject updateRole(@RequestBody JSONObject requestJson) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="roleUpdateItem", value = "修改角色信息", dataTypeClass = RoleUpdateItem.class)
+    })
+    public JSONObject updateRole(@RequestBody RoleUpdateItem roleUpdateItem) {
+        JSONObject requestJson = JSON.parseObject(JSON.toJSONString(roleUpdateItem));
         CommonUtil.hasAllRequired(requestJson, "roleId,roleName,permissions");
         return userManagerService.updateRole(requestJson);
     }
@@ -342,35 +394,35 @@ public class UserController {
         return userManagerService.deleteRole(requestJson);
     }
 
-    @ApiOperation("修改密码")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", required = true, value = "用户名", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "oldpassword", required = true, value = "旧密码（已md5加密的密码）", dataTypeClass = String.class),
-            @ApiImplicitParam(name = "password", required = true, value = "新密码（未md5加密的密码）", dataTypeClass = String.class),
-    })
-    @PostMapping("/changePassword")
-    public String changePassword(@RequestParam String oldPassword, @RequestParam String password){
-        // 获取当前登录用户id
-        LoginUser userInfo = SecurityUtils.getUserInfo();
-        if (userInfo== null) {
-            return "fail";
-        }
-        String username = userInfo.getUsername();
-        LoginUser user = null;
-        try {
-            user = SecurityUtils.login(username, oldPassword, authenticationManager);
-            if (user != null) {
-                int userId = SecurityUtils.getUserId();
-                boolean result = userService.changePassword(userId, DigestUtils.md5DigestAsHex(password.getBytes()));
-                if (result) {
-                    return "success";
-                }
-            }
-        } catch (AuthenticationException e) {
-            e.printStackTrace();
-        }
-        return "fail";
-    }
+//    @ApiOperation("修改密码")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "username", required = true, value = "用户名", dataTypeClass = String.class),
+//            @ApiImplicitParam(name = "oldpassword", required = true, value = "旧密码（已md5加密的密码）", dataTypeClass = String.class),
+//            @ApiImplicitParam(name = "password", required = true, value = "新密码（未md5加密的密码）", dataTypeClass = String.class),
+//    })
+//    @PostMapping("/changePassword")
+//    public String changePassword(@RequestParam String oldPassword, @RequestParam String password){
+//        // 获取当前登录用户id
+//        LoginUser userInfo = SecurityUtils.getUserInfo();
+//        if (userInfo== null) {
+//            return "fail";
+//        }
+//        String username = userInfo.getUsername();
+//        LoginUser user = null;
+//        try {
+//            user = SecurityUtils.login(username, oldPassword, authenticationManager);
+//            if (user != null) {
+//                int userId = SecurityUtils.getUserId();
+//                boolean result = userService.changePassword(userId, DigestUtils.md5DigestAsHex(password.getBytes()));
+//                if (result) {
+//                    return "success";
+//                }
+//            }
+//        } catch (AuthenticationException e) {
+//            e.printStackTrace();
+//        }
+//        return "fail";
+//    }
 
 
 //    @ApiOperation("添加用户")

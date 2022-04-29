@@ -74,8 +74,9 @@ sip:
 
 #zlm 默认服务器配置
 media:
-    id: p1uQtdDwZsd5V4x0
-    # [必须修改] zlm服务器的内网IP
+    # [笔记本]   [台式机] of8UsxEQJGha8H21 DfeUHWzoVTxp2zG1  10.21.0.126:6ru5IiO7plTEgART
+    id: of8UsxEQJGha8H21
+    # [必须修改] zlm服务器的内网IP  10.21.0.120 10.21.0.122
     ip: 10.21.0.122
     # [必须修改] zlm服务器的http.port
     http-port: 18088

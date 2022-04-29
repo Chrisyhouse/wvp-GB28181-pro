@@ -46,11 +46,38 @@ public interface UserManagerDao {
 	 * 查询所有权限, 给角色分配权限时调用
 	 */
 	List<JSONObject> listAllPermission();
+	/**
+	 * 查询是否存在重复名称的List
+	 */
+	List<JSONObject> listRepeatPermission(String menu_name);
 
 	/**
 	 * 新增权限
 	 */
 	int insertPermission(JSONObject jsonObject);
+
+	/**
+	 * 更新权限表参数
+	 */
+	int updatePermissionMenuName(String old_menu_name,String new_menu_name);
+
+	/**
+	 * 根据名称删除权限表
+	 */
+	int RemovePermissionByMenuName(String menu_name);
+
+	/**
+	 * 根据perimission_id删除权限表
+	 */
+	int deleteRolePermission(int id);
+
+	/**
+	 * 批量插入权限的设备组
+	 *
+	 * @param id      角色ID
+	 * @param devices 权限
+	 */
+	int insertDevicePermission(@Param("id") String id, @Param("devices") List<Integer> devices);
 
 	/**
 	 * 角色列表
@@ -95,4 +122,9 @@ public interface UserManagerDao {
 	 * 删除本角色全部权限
 	 */
 	int removeRoleAllPermission(JSONObject jsonObject);
+
+	/**
+	 * 删除角色权限表下的所有某个权限
+	 */
+	int removeOnePermission(@Param("permission_id") String permission_id);
 }

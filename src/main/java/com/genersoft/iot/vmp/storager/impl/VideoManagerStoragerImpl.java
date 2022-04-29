@@ -109,6 +109,9 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 	@Autowired
     private MediaServerMapper mediaServerMapper;
 
+	@Autowired
+	private PermissionDao permissionDao;
+
 	private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -445,6 +448,33 @@ public class VideoManagerStoragerImpl implements IVideoManagerStorager {
 		PageHelper.startPage(page, count);
 		List<Device> all = deviceMapper.getDevices();
 		return new PageInfo<>(all);
+	}
+
+	/**
+	 * 获取某设备组权限下的设备列表
+	 *
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return PageInfo<Device> 分页设备对象数组
+	 */
+	@Override
+	public PageInfo<Device> queryVideoDeviceListByDeviceGp(int page, int count , String menuName,int roleId) {
+		PageHelper.startPage(page, count);
+		List<Device> all = deviceMapper.getDevices();
+		List<Device> newDeviceList = new ArrayList<>();
+		//查询permission表中所有属于某设备组的设备名
+//		Set<String> getDeviceByDeviceGpList = permissionDao.getAllDevicesByDeviceGp(menuName);
+		//查询role_permission表当前role下的设备
+		Set<String> getDeviceByRoleIdList = permissionDao.getAllDevicesByRoleIdAndMenuName(roleId,menuName);
+		//筛选
+		for (int i = 0; i < all.size(); i++) {
+			//是否属于permission表
+			if(getDeviceByRoleIdList.contains(all.get(i).getDeviceId())){
+				//都属于，添加
+				newDeviceList.add(all.get(i));
+			}
+		}
+		return new PageInfo<>(newDeviceList);
 	}
 
 	/**

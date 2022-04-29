@@ -1,10 +1,13 @@
 package com.genersoft.iot.vmp.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.genersoft.iot.vmp.gb28181.bean.Device;
 import com.genersoft.iot.vmp.service.IUserManagerService;
+import com.genersoft.iot.vmp.storager.IVideoManagerStorager;
 import com.genersoft.iot.vmp.storager.dao.UserManagerDao;
 import com.genersoft.iot.vmp.utils.CommonUtil;
 import com.genersoft.iot.vmp.utils.constants.ErrorEnum;
+import org.junit.platform.commons.function.Try;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,9 @@ import java.util.Set;
 public class UserManagerServiceImpl implements IUserManagerService {
     @Autowired
     private UserManagerDao userDao;
+
+    @Autowired
+    private IVideoManagerStorager storager;
 
     /**
      * 用户列表
@@ -81,30 +87,88 @@ public class UserManagerServiceImpl implements IUserManagerService {
     }
 
     /**
-     * 新增权限菜单
+     * 新增权限菜单设备组名称
      */
     @Override
-    public JSONObject addPermission(JSONObject jsonObject) {
-        userDao.insertPermission(jsonObject);
-        return CommonUtil.successJson();
+    public JSONObject addPermission(String menu_name) {
+       //非空
+       if(menu_name != null){
+           JSONObject requestJson = new JSONObject();
+           List<Device> deviceList =  storager.queryVideoDeviceList();
+           //判断是否重复
+           List<JSONObject>  listRepeatPermission = userDao.listRepeatPermission(menu_name);
+           if(listRepeatPermission.size()>0){
+               return CommonUtil.errorJson(ErrorEnum.E_10011);
+           }else {
+               try {
+                   for (int i = 0; i < deviceList.size(); i++) {
+                       Device device = deviceList.get(i);
+                       requestJson.put("id" , (int)((Math.random()*9+1)*100000));//生成6位随机数（不会是5位或者7位，仅只有6位）：
+                       requestJson.put("menu_code" , "deviceGp");
+                       requestJson.put("menu_name" , menu_name);
+                       requestJson.put("permission_code" , device.getDeviceId());
+                       requestJson.put("permission_name" , device.getName());
+                       requestJson.put("required_permission" , 2);
+                       userDao.insertPermission(requestJson);
+                   }
+                   return CommonUtil.successJson();
+               }catch (Exception e){
+                   return CommonUtil.errorJson(ErrorEnum.E_400);
+               }
+           }
+       }else {
+           return CommonUtil.errorJson(ErrorEnum.E_400);
+       }
     }
 
     /**
-     * 修改权限菜单
+     * 修改权限菜单设备组名称
      */
+    @Transactional(rollbackFor = Exception.class)
+    @SuppressWarnings("unchecked")
     @Override
-    public JSONObject updatePermission() {
-        List<JSONObject> permissions = userDao.listAllPermission();
-        return CommonUtil.successPage(permissions);
+    public JSONObject updatePermission(String old_menu_name,String new_menu_name) {
+        //非空
+        if(old_menu_name != null && new_menu_name != null ){
+            //判断新名称是否重复
+            List<JSONObject>  listRepeatPermission = userDao.listRepeatPermission(new_menu_name);
+            if(listRepeatPermission.size()>0){
+                return CommonUtil.errorJson(ErrorEnum.E_10011);
+            }else {
+                try {
+                    //更新设备组名称
+                    userDao.updatePermissionMenuName(old_menu_name,new_menu_name);
+                    return CommonUtil.successJson();
+                }catch (Exception e){
+                    return CommonUtil.errorJson(ErrorEnum.E_400);
+                }
+            }
+        }else {
+            return CommonUtil.errorJson(ErrorEnum.E_400);
+        }
     }
 
     /**
      * 删除权限菜单
      */
     @Override
-    public JSONObject deletePermission() {
-        List<JSONObject> permissions = userDao.listAllPermission();
-        return CommonUtil.successPage(permissions);
+    public JSONObject deletePermission(String menu_name) {
+        try{
+            //删除角色权限关系表中的所有权限
+            List<JSONObject> RepeatPermissionList = userDao.listRepeatPermission(menu_name);
+            if(RepeatPermissionList.size()>0){
+                for (int i = 0; i < RepeatPermissionList.size(); i++) {
+                    int id = Integer.parseInt(RepeatPermissionList.get(i).getJSONArray("permissions").getJSONObject(0).getString("id"));
+                    userDao.deleteRolePermission(id);
+                }
+            }
+            //删除权限表
+            userDao.RemovePermissionByMenuName(menu_name);
+            return CommonUtil.successJson();
+        }catch (Exception e){
+            return CommonUtil.errorJson(ErrorEnum.E_400);
+        }
+
     }
 
 

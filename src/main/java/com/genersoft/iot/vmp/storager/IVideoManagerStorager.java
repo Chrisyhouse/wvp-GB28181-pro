@@ -169,6 +169,15 @@ public interface IVideoManagerStorager {
 	public List<Device> queryVideoDeviceList();
 
 	/**
+	 * 获取某设备组权限下的设备列表
+	 *
+	 * @param page 当前页数
+	 * @param count 每页数量
+	 * @return PageInfo<Device> 分页设备对象数组
+	 */
+	public PageInfo<Device> queryVideoDeviceListByDeviceGp(int page, int count,String menuName,int roleId);
+
+	/**
 	 * 删除设备
 	 *
 	 * @param deviceId 设备ID

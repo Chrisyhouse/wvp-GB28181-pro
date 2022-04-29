@@ -27,3 +27,8 @@ hs_err_pid*
 /target/
 
 /src/main/resources/static/
+web_src/package-lock.json
+web_src/src/components/Login.vue
+*.yml
+*.yml
+*.yml

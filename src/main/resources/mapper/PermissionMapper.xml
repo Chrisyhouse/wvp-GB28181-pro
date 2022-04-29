@@ -31,14 +31,52 @@
           AND u.delete_status = '1'
     </select>
 
+    <resultMap id="deviceGpMap" type="com.genersoft.iot.vmp.utils.model.One2Many">
+        <id column="userId" property="userId"/>
+        <result column="roleId" property="roleId"/>
+        <result column="roleName" property="roleName"/>
+        <collection property="menuList" ofType="String">
+            <id column="menuName" property="menuName"/>
+        </collection>
+    </resultMap>
+    <select id="getUserDeviceGp" resultMap="deviceGpMap">
+        SELECT
+            u.id              userId,
+            u.role_id         roleId,
+            r.role_name       roleName,
+            p.menu_name       menuName
+        FROM sys_user u
+                 LEFT JOIN sys_role r ON r.id = u.role_id
+                 LEFT JOIN sys_role_permission rp ON u.role_id = rp.role_id
+                 LEFT JOIN sys_permission p ON rp.permission_id = p.id AND rp.delete_status = '1' AND p.menu_code = 'deviceGp'
+        WHERE u.username = #{username}
+          AND u.delete_status = '1'
+    </select>
+
     <select id="getAllPermission" resultType="String">
         SELECT p.permission_code permissionCode
         FROM sys_permission p
         ORDER BY p.id
     </select>
+
+    <select id="getAllDevicesByDeviceGp" resultType="String">
+        SELECT p.permission_code permissionCode
+        FROM sys_permission p WHERE menu_name = #{menuName}
+    </select>
+
+    <select id="getAllDevicesByRoleIdAndMenuName" resultType="String">
+        SELECT
+            u.permission_code              permissionCode
+        FROM sys_role_permission p
+                 LEFT JOIN sys_permission u ON u.id = p.permission_id AND u.menu_name =  #{menuName}
+        WHERE p.role_id = #{roleId}
+          AND p.delete_status = '1'
+    </select>
+
     <select id="getAllMenu" resultType="String">
         SELECT p.menu_code menuCode
         FROM sys_permission p
         ORDER BY p.id
     </select>
+
 </mapper>

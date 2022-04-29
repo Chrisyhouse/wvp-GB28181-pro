@@ -39,17 +39,17 @@ public interface IUserManagerService {
      * 新增权限
      */
 
-    JSONObject addPermission(JSONObject jsonObject);
+    JSONObject addPermission(String menu_name);
 
     /**
      * 修改权限
      */
-    JSONObject updatePermission();
+    JSONObject updatePermission(String old_menu_name,String new_menu_name);
 
     /**
      * 删除权限
      */
-    JSONObject deletePermission();
+    JSONObject deletePermission(String menu_name);
 
     /**
      * 角色列表

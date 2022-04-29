@@ -110,6 +110,7 @@
     </select>
     <resultMap id="permissionMap" type="com.genersoft.iot.vmp.utils.model.One2Many">
         <id column="menuName" property="menuName"/>
+        <id column="menuCode" property="menuCode"/>
         <collection property="permissions" ofType="com.alibaba.fastjson.JSONObject">
             <id column="id" property="id"/>
             <result column="permissionName" property="permissionName"/>
@@ -119,10 +120,14 @@
     <select id="listAllPermission" resultMap="permissionMap">
         SELECT
             p.id                  id,
+            p.menu_code           menuCode,
             p.menu_name           menuName,
             p.permission_name     permissionName,
             p.required_permission requiredPerm
         FROM sys_permission p;
+    </select>
+    <select id="listRepeatPermission" resultMap="permissionMap">
+        select * from sys_permission where menu_name =  #{menu_name}
     </select>
 
     <insert id="insertPermission" useGeneratedKeys="true" keyProperty="permissionId">
@@ -131,13 +136,37 @@
         (#{id}, #{menu_code}, #{menu_name}, #{permission_code}, #{permission_name}, #{required_permission})
     </insert>
 
+    <delete id="deleteRolePermission">
+        DELETE  FROM  sys_role_permission
+        WHERE permission_id = #{id}
+    </delete>
+
     <insert id="insertDevicePermission">
         insert into sys_device_permission (permission_id, device_id)
         values
-        <foreach collection="permissions" item="item" index="index" separator=",">
-            (#{roleId}, #{item})
+        <foreach collection="devices" item="item" index="index" separator=",">
+            (#{id}, #{item})
         </foreach>
     </insert>
+
+    <update id="updatePermissionMenuName">
+        UPDATE sys_permission
+        SET
+            menu_name = #{new_menu_name}
+        WHERE menu_name = #{old_menu_name}
+    </update>
+
+    <update id="removePermissionAllDevice">
+        UPDATE sys_device_permission
+        SET
+        delete_status = '2'
+        WHERE permission_id = #{permission_id}
+        AND device_id in (
+        <foreach collection="devices" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
 
     <insert id="insertRole" useGeneratedKeys="true" keyProperty="roleId">
         INSERT INTO sys_role
@@ -182,6 +211,7 @@
             delete_status = '2'
         WHERE id = #{roleId} and id !=1
     </update>
+
     <update id="removeRoleAllPermission">
         UPDATE sys_role_permission
         SET
@@ -200,12 +230,19 @@
         </foreach>
         )
     </update>
+
+    <delete id="RemovePermissionByMenuName">
+        DELETE  FROM  sys_permission
+        WHERE menu_name = #{menu_name}
+    </delete>
+
     <update id="updateRoleName">
         UPDATE sys_role
         SET
             role_name = #{roleName}
         WHERE id = #{roleId}
     </update>
+
     <select id="queryExistUsername" resultType="int">
         select count(0)
          from sys_user

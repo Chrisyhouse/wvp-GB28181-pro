@@ -15,6 +15,11 @@ public interface PermissionDao {
 	JSONObject getUserPermission(String username);
 
 	/**
+	 * 查询用户的设备组
+	 */
+	JSONObject getUserDeviceGp(String username);
+
+	/**
 	 * 查询所有的菜单
 	 */
 	Set<String> getAllMenu();
@@ -23,4 +28,14 @@ public interface PermissionDao {
 	 * 查询所有的权限
 	 */
 	Set<String> getAllPermission();
+
+	/**
+	 * 查询设备组下所有设备
+	 */
+	Set<String> getAllDevicesByDeviceGp(String menuName);
+
+	/**
+	 * 查询角色下下所有设备
+	 */
+	Set<String> getAllDevicesByRoleIdAndMenuName(int roleId , String menuName);
 }
